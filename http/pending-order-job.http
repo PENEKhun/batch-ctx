@@ -1,0 +1,5 @@
+### Trigger pendingOrderJob manually
+POST http://localhost:8080/api/jobs/pending-orders/run
+Content-Type: application/json
+
+{}
