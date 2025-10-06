@@ -1,10 +1,40 @@
 services:
-  mysql:
-    image: 'mysql:latest'
+  our-application-db:
+    image: 'mysql:8.4'
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      - 'MYSQL_DATABASE=ourapp'
+      - 'MYSQL_USER=ouruser'
+      - 'MYSQL_PASSWORD=our-secret'
+      - 'MYSQL_ROOT_PASSWORD=our-root-secret'
     ports:
-      - '3306'
+      - '3307:3306'
+    volumes:
+      - our-application-data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -p"$${MYSQL_ROOT_PASSWORD}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  thirdparty-api-db:
+    image: 'mysql:8.4'
+    environment:
+      - 'MYSQL_DATABASE=thirdparty'
+      - 'MYSQL_USER=thirduser'
+      - 'MYSQL_PASSWORD=third-secret'
+      - 'MYSQL_ROOT_PASSWORD=third-root-secret'
+    ports:
+      - '3308:3306'
+    volumes:
+      - thirdparty-api-data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -p"$${MYSQL_ROOT_PASSWORD}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  our-application-data:
+  thirdparty-api-data:

@@ -3,10 +3,14 @@ server:
 spring:
   application:
     name: thirdparty-api
+  docker:
+    compose:
+      file: ../compose.yaml
+      lifecycle-management: start_and_stop
   datasource:
-    url: jdbc:mysql://localhost:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: myuser
-    password: secret
+    url: jdbc:mysql://localhost:3308/thirdparty?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: thirduser
+    password: third-secret
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
