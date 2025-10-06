@@ -5,7 +5,7 @@ spring:
     name: thirdparty-api
   docker:
     compose:
-      file: ../compose.yaml
+      file: ../compose-thirdparty.yaml
       lifecycle-management: start_and_stop
   datasource:
     url: jdbc:mysql://localhost:3308/thirdparty?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC

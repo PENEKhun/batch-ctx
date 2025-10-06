@@ -1,6 +1,7 @@
 package kr.huni.batctx.job.order.client;
 
 import java.time.Instant;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +49,7 @@ public class ThirdPartyOrderClient {
 
             return ThirdPartyOrderResult.created(response.orderId(), response.createdAt());
         } catch (HttpClientErrorException ex) {
-            if (ex.getStatusCode().is4xxClientError() && ex.getStatusCode().isSameCodeAs(HttpStatus.CONFLICT)) {
-                log.info("Third-party order already exists for user={} appliedYearMonth={}",
-                        pendingOrder.username(), pendingOrder.appliedYearMonth());
-                return ThirdPartyOrderResult.alreadyExists();
-            }
-            throw new IllegalStateException("Failed to create third-party order: " + ex.getMessage(), ex);
+            throw new IllegalStateException("외부 API 오류!! 무슨 에러인진 모름!!!");
         } catch (RestClientException ex) {
             log.error("Unexpected error while calling third-party order API", ex);
             throw new IllegalStateException("Unexpected error while calling third-party order API", ex);
