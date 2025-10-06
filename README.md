@@ -4,16 +4,17 @@
 
 ---
 
-## Modules
+## 간략한 Repo Structure
+
+### Modules
 - `our-application`: spring-batch application
 - `thirdparty-api`: 배치에서 호출 할 임의의 써드파티 API
 
-## Getting Started
-1. `docker compose up -d`로 실행에 필요한 MySQL을 기동합니다.
-2. `./gradlew :thirdparty-api:bootRun`으로 모의 써드파티 API를 띄우고,
-3. `./gradlew :our-application:bootRun`으로 배치 애플리케이션을 실행합니다.
+### Getting Started
+1. `./gradlew :thirdparty-api:bootRun`으로 외부 API를 띄움
+2. `./gradlew :our-application:bootRun`으로 인하우스 배치 애플리케이션을 띄움
 
-## thirdparty-api 주문 API
+### thirdparty-api 주문 API
 
 - `POST /orders`
   - 요청 예시
@@ -26,13 +27,16 @@
     ```
   - 동일한 신청년월에 이미 주문이 존재하면 `409 CONFLICT`와 함께 `이미 신청된 사용자` 오류를 반환합니다.
   - 성공 시 MySQL `orders` 테이블에 주문이 저장되며, 응답에는 생성된 주문 ID와 생성 시각이 포함됩니다.
+  - Docker Compose가 띄운 `thirdparty-api-db`에 저장되므로 실행 전에 컨테이너가 떠 있는지 확인하세요.
 
 ## 시나리오 1
 
 ### 문제 상황
 
-- Batch Step에서 외부 API를 호출함.
-- 이 외부 API는 조회가 아닌 쓰기 API라서, 한 번 호출되면 되돌리기 어려움.
+- 배치 Step에서 외부 API(쓰기 성격)를 호출한다. 이 API는 한 번 호출되면 되돌리기 어렵다.
+- 처리 대상 아이템이 100건일 때, 96번째에서 외부 API 장애나 애플리케이션 오류로 실패하면,
+  - 잡을 재시작하더라도 이미 처리된 아이템에 대해 동일 API를 다시 호출하게 되어 오류가 반복될 수 있다.
+  - 그 결과, 재실행해도 동일 지점에서 재실패가 발생해 회복 탄력성(resilience) 이 확보되지 않는다.
 
 ### 가설
 
