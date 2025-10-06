@@ -3,3 +3,17 @@ server:
 spring:
   application:
     name: thirdparty-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: myuser
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      encoding: UTF-8
